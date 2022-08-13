@@ -7,6 +7,8 @@ interface Props {
   title: string;
 }
 
+const origin = (typeof window === 'undefined') ? '' : window.location.origin;
+
 export const Layout: FC<PropsWithChildren<Props>> = ({ children, title }) => {
   return (
     <>
@@ -15,6 +17,10 @@ export const Layout: FC<PropsWithChildren<Props>> = ({ children, title }) => {
         <meta name="author" content="Abraham Hdz" />
         <meta name="description" content="Informaciòn sobre el pokemon xxx" />
         <meta name="keywords" content="XXXX, pokemon, pokedex" />
+      
+        <meta name="og:title" content={`Información sobre ${ title }`} />
+        <meta name="og:description" content={`Esta es la página sobre ${ title }`} />
+        <meta name="og:image" content={`${origin}/img/banner.png`} />
       </Head>
 
       <NavBar />

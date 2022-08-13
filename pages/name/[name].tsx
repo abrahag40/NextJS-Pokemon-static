@@ -1,19 +1,17 @@
-import React, { useState } from 'react'
-
-import { GetStaticPaths, GetStaticProps, NextPage } from 'next';
-import { Button, Card, Container, Grid, Text, Image } from '@nextui-org/react';
-import confetti from "canvas-confetti";
-
-import { pokeApi } from '../../api';
-import { Layout } from '../../components/layouts';
-import { Pokemon } from '../../interfaces';
+import React, { useState } from 'react';
+import { Grid, Card, Button, Container, Image, Text } from '@nextui-org/react';
+import { NextPage, GetStaticPaths, GetStaticProps } from 'next';
+import confetti from 'canvas-confetti';
 import { existInFavorites, getPokemonInfo, toggleFavorite } from '../../utils';
+import { Layout } from '../../components/layouts';
+import { pokeApi } from '../../api';
+import { Pokemon, PokemonListRespones } from '../../interfaces';
 
 interface Props {
   pokemon: Pokemon;
 }
 
-const PokemonPage: NextPage<Props> = ({ pokemon }) => {
+const PokemonByNamePage: NextPage<Props> = ({ pokemon }) => {
  
   const [isInFavorites, setIsInFavorites] = useState( existInFavorites( pokemon.id ) )
 
@@ -101,25 +99,27 @@ const PokemonPage: NextPage<Props> = ({ pokemon }) => {
 
 export const getStaticPaths: GetStaticPaths = async (ctx) => {
 
-  const pokemon151 = [...Array(151)].map( ( value, index ) => `${ index + 1 }` );
+  const { data: { results } } = await pokeApi.get<PokemonListRespones>('/pokemon?limit=151');
+  const pokemonNames: string[] = results.map(({ name }) => name);
 
   return {
-    paths: pokemon151.map( id => ({
-      params: { id }
+    paths: pokemonNames.map(name => ({
+      params: { name }
     })),
-    fallback: false
+    fallback: false,
   }
 }
 
+
 export const getStaticProps: GetStaticProps = async ({ params }) => {
 
-  const { id } = params as { id: string };
+  const { name } = params as { name: string };
 
   return {
     props: {
-      pokemon: await getPokemonInfo(id)
+      pokemon: await getPokemonInfo(name)
     }
   }
 }
 
-export default PokemonPage;
+export default PokemonByNamePage;

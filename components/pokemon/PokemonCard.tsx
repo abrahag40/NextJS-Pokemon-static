@@ -13,7 +13,7 @@ export const PokemonCard: FC<Props> = ({ pokemon }) => {
 
   const router = useRouter();
 
-  const onClick = () => router.push(`/pokemon/${pokemon.key}`);
+  const onClick = () => router.push(`/name/${pokemon.name}`);
 
   return (
     <Grid key={key} xs={6} sm={3} md={4} xl={1}>
